@@ -10,24 +10,127 @@
 
 const inquirer = require('inquirer');
 const fs = require('fs');
+let members = 1;
 const questions = ['Please enter manager name: ','Please enter employee ID: ', 'Please enter e-mail address',
-                    'Please enter the team managers office number: ', 'Please select one of the following: ',
-                    'Please enter engineer name: ', 'Please enter GitHub username: ', 'Please enter intern name: ',
-                    'Please enter school: '];
+    'Please enter the team managers office number: ', 'Please select one of the following: ','Please enter engineer name: ',
+    'Please enter GitHub username: ', 'Please enter intern name: ','Please enter school: '];
 
 init = function (){
+    askManagerQuestions();
+}
+
+
+askManagerQuestions = function(){
     inquirer
     .prompt([
         {
             type: 'input',
             name: 'managerName',
             message: questions[0]
+        },
+        {
+            type: 'number',
+            name: 'managerID',
+            message: questions[1]
+        },
+        {
+            type: 'input',
+            name: 'managerEmail',
+            message: questions[2]
+        },
+        {
+            type: 'number',
+            name: 'managerPhone',
+            message: questions[3]
         }
 
     ])
     .then((data) =>{
         console.log(data);
+        askTeamChoice();
+    })
+}
 
+askTeamChoice = function(){
+    inquirer
+    .prompt([
+        {
+            type: 'list',
+            name: 'teamSelection',
+            message: questions[4],
+            choices: ['Engineer', 'Intern', 'Finish Building My Team']
+        }
+    ])
+    .then((data) =>{
+        console.log(data.teamSelection);
+        if(data.teamSelection === 'Engineer'){
+            askEngineerQuestions();
+        } else if(data.teamSelection === 'Intern'){
+            askInternQuestions();
+        } else if(data.teamSelection === 'Finish Building My Team'){
+            return;
+        }
+    })
+}
+
+askEngineerQuestions = function(){
+    inquirer
+    .prompt([
+        {
+            type: 'input',
+            name: `engineerName`,
+            message: questions[5]
+        },
+        {
+            type: 'input',
+            name: 'engineerID',
+            message: questions[1]
+        },
+        {
+            type: 'input',
+            name: 'engineerEmail',
+            message: questions[2]
+        },
+        {
+            type: 'input',
+            name: 'engineerGitHub',
+            message: questions[6]
+        }
+    ])
+    .then((data) =>{
+        console.log(data);
+        askTeamChoice();
+    })
+}
+
+askInternQuestions = function(){
+    inquirer
+    .prompt([
+        {
+            type: 'input',
+            name: `InternName`,
+            message: questions[7]
+        },
+        {
+            type: 'input',
+            name: 'internID',
+            message: questions[1]
+        },
+        {
+            type: 'input',
+            name: 'internEmail',
+            message: questions[2]
+        },
+        {
+            type: 'input',
+            name: 'internSchool',
+            message: questions[8]
+        }
+        
+    ])
+    .then((data) => {
+        console.log(data);
+        askTeamChoice();
     })
 }
 
