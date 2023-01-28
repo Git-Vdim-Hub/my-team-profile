@@ -9,6 +9,8 @@ const inquirer = require('inquirer');
 const fs = require('fs');
 const Manager = require('./lib/Manager');
 const Engineer = require('./lib/Engineer');
+const Intern = require('./lib/Intern');
+var htmlBuild = '';
 const questions = ['Please enter manager name: ','Please enter employee ID: ', 'Please enter e-mail address',
     'Please enter the team managers office number: ', 'Please select one of the following: ','Please enter engineer name: ',
     'Please enter GitHub username: ', 'Please enter intern name: ','Please enter school: '];
@@ -44,12 +46,8 @@ askManagerQuestions = function(){
 
     ])
     .then((data) =>{
-        console.log(data);
         const manager = new Manager(data.managerName, data.managerID, data.managerEmail, data.managerPhone);
-        fs.writeFile('./dist/team.html', writeManagerBaseHTML(manager.getName(), manager.getId(), manager.getEmail(), manager.getPhone()), (err) =>{
-            if (err) throw err;
-            console.log('The file has been saved!');
-        })
+        writeManagerBaseHTML(manager.getName(), manager.getId(), manager.getEmail(), manager.getPhone())
         askTeamChoice();
     })
 }
@@ -71,7 +69,11 @@ askTeamChoice = function(){
         } else if(data.teamSelection === 'Intern'){
             askInternQuestions();
         } else if(data.teamSelection === 'Finish Building My Team'){
-            return;
+            writeBottomHTML();
+            fs.writeFile('./dist/team.html',htmlBuild , (err) =>{
+                if (err) throw err;
+                console.log('The file has been saved!');
+            })
         }
     })
 }
@@ -102,6 +104,8 @@ askEngineerQuestions = function(){
     ])
     .then((data) =>{
         console.log(data);
+        let engineer = new Engineer(data.engineerName, data.engineerID, data.engineerEmail, data.engineerGitHub);
+        writeEngineerCard(engineer.getName(), engineer.getId(), engineer.getEmail(), engineer.getGitHub());
         askTeamChoice();
     })
 }
@@ -138,7 +142,7 @@ askInternQuestions = function(){
 }
 
 writeManagerBaseHTML = function(name, id, email, phone){
-    let htmlCode = `<!DOCTYPE html>
+    htmlBuild += `<!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -163,7 +167,7 @@ writeManagerBaseHTML = function(name, id, email, phone){
           </div>
         </div>
         <div class="col-md-8 align-items">
-              <div class="row justify-content-md-center" id="cards">
+            <div class="row justify-content-md-center" id="cardSelector">
                 <div class="col-md-4 gy-3">
                   <div class="card">
                       <h5 class="card-header border-bottom-0 text-white" style="background-color: #0d6efd;">${name}</h5>
@@ -182,19 +186,67 @@ writeManagerBaseHTML = function(name, id, email, phone){
                       </div>
                     </div>
                 </div>
-              </div>
-        </div>
-
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" 
-        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>   
-        <script src="../index.js"></script>
-    </body>
-    </html>`
-    return htmlCode;
+          `
 }
 
-// writeEngineerCard = function(name, id, email, gitHub){
+writeEngineerCard = function(name, id, email, gitHub){
+    htmlBuild += `
+    <div class="col-md-4 gy-3">
+        <div class="card">
+            <h5 class="card-header border-bottom-0 text-white" style="background-color: #0d6efd;">${name}</h5>
+            <h6 class="card-header border-0 text-white" style="background-color: #0d6efd;">
+            <i class="bi bi-eyeglasses"></i> Engineer</h6>
+            <div class="card-body row justify-content-center">
+                <div class="card" style="width: 18rem;">
+                    <ul class="list-group list-group-flush text-left">
+                    <li class="list-group-item">ID: ${id}</li>
+                    <li class="list-group-item">Email:
+                        <a href="mailto:${email}" class="card-link text-decoration-none">${email}</a>
+                    </li>
+                    <li class="list-group-item">GitHub:
+                        <a href="https://github.com/${gitHub}" class="card-link text-decoration-none">${gitHub}</a>
+                    </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+   </div>
+  `;
+}
 
-// }
+writeInternCard = function (name, id, email, school) {
+    htmlBuild += `
+    <div class="col-md-4 gy-3">
+    <div class="card">
+        <h5 class="card-header border-bottom-0 text-white" style="background-color: #0d6efd;">${name}</h5>
+        <h6 class="card-header border-0 text-white" style="background-color: #0d6efd;">
+          <i class="bi bi-mortarboard"></i> Intern</h6>
+        <div class="card-body row justify-content-center">
+            <div class="card" style="width: 18rem;">
+                <ul class="list-group list-group-flush text-left">
+                  <li class="list-group-item">ID: ${id}</li>
+                  <li class="list-group-item">Email:
+                    <a href="mailto:${email}" class="card-link text-decoration-none">${email}</a>
+                  </li>
+                  <li class="list-group-item">School: ${school}</li>
+                </ul>
+              </div>
+        </div>
+      </div>
+  </div>
+    `
+}
+
+writeBottomHTML = function () {
+    htmlBuild += `
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" 
+    integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>   
+    <script src="../index.js"></script>
+</body>
+</html>`
+}
 
 init();
