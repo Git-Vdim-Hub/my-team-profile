@@ -1,5 +1,4 @@
 //To=DO
-// make sure github opens in a new tab
 // Add code comments
 //create demo vid
 //
