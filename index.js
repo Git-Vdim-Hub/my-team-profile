@@ -1,26 +1,21 @@
-//To=DO
-// Add code comments
-//create demo vid
-//
-//complete readMe
-
-
-
+//calls all required classes, files and dependencies
 const inquirer = require('inquirer');
 const fs = require('fs');
 const Manager = require('./lib/Manager');
 const Engineer = require('./lib/Engineer');
 const Intern = require('./lib/Intern');
+//used to store html code before fs.writeFile() is called
 var htmlBuild = '';
+//questions used by inquirer
 const questions = ['Please enter manager name: ','Please enter employee ID: ', 'Please enter e-mail address',
     'Please enter the team managers office number: ', 'Please select one of the following: ','Please enter engineer name: ',
     'Please enter GitHub username: ', 'Please enter intern name: ','Please enter school: '];
-
+//initializes the application
 init = function (){
     askManagerQuestions();
 }
 
-
+//the initial questions asked when running this application
 askManagerQuestions = function(){
     inquirer
     .prompt([
@@ -52,7 +47,8 @@ askManagerQuestions = function(){
         askTeamChoice();
     })
 }
-
+//list question ased using inquirer to determine if an intern, engineer needs
+//to be added to the team, or if the team is built and the html file needs to be created
 askTeamChoice = function(){
     inquirer
     .prompt([
@@ -64,13 +60,17 @@ askTeamChoice = function(){
         }
     ])
     .then((data) =>{
-        console.log(data.teamSelection);
+        // if engineer is selected, ask engineer questions
         if(data.teamSelection === 'Engineer'){
             askEngineerQuestions();
+        //if Intern is selected, ask Intern questions
         } else if(data.teamSelection === 'Intern'){
             askInternQuestions();
+            // how to finish the team construct and render the team.html file
         } else if(data.teamSelection === 'Finish Building My Team'){
+            //finish writing the closing divs and link bootstrap
             writeBottomHTML();
+            //render the team.html file with htmlBuild variable
             fs.writeFile('./dist/team.html',htmlBuild , (err) =>{
                 if (err) throw err;
                 console.log('The file has been saved!');
@@ -78,7 +78,7 @@ askTeamChoice = function(){
         }
     })
 }
-
+// engineer questions
 askEngineerQuestions = function(){
     inquirer
     .prompt([
@@ -104,12 +104,15 @@ askEngineerQuestions = function(){
         }
     ])
     .then((data) =>{
+        // create a new engineer object
         let engineer = new Engineer(data.engineerName, data.engineerID, data.engineerEmail, data.engineerGitHub);
+        // call the engineer object to add to the Html build variable
         writeEngineerCard(engineer.getName(), engineer.getId(), engineer.getEmail(), engineer.getGitHub());
+        //ask prompt for the team choice again
         askTeamChoice();
     })
 }
-
+// intern tquestions
 askInternQuestions = function(){
     inquirer
     .prompt([
@@ -136,13 +139,15 @@ askInternQuestions = function(){
         
     ])
     .then((data) => {
-        console.log(data);
+        //declare a new intern object
         const intern = new Intern(data.internName, data.internID, data.internEmail, data.internSchool);
+        //call the intern object to add the intern data to the html variable
         writeInternCard(intern.getName(), intern.getId(), intern.getEmail(), intern.getSchool());
+       //ask what to do next
         askTeamChoice();
     })
 }
-
+// add html code to htmlBuild for a manager 
 writeManagerBaseHTML = function(name, id, email, phone){
     htmlBuild += `<!DOCTYPE html>
     <html lang="en">
@@ -190,7 +195,7 @@ writeManagerBaseHTML = function(name, id, email, phone){
                 </div>
           `
 }
-
+//add html code for an engineer to htmlBuild
 writeEngineerCard = function(name, id, email, gitHub){
     htmlBuild += `
     <div class="col-md-4 gy-3">
@@ -215,7 +220,7 @@ writeEngineerCard = function(name, id, email, gitHub){
    </div>
   `;
 }
-
+//add html code for an intern card to htmlBuild
 writeInternCard = function (name, id, email, school) {
     htmlBuild += `
     <div class="col-md-4 gy-3">
@@ -238,15 +243,14 @@ writeInternCard = function (name, id, email, school) {
   </div>
     `
 }
-
+//write the bottom of the html file
 writeBottomHTML = function () {
     htmlBuild += `
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" 
-    integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>   
-    <script src="../index.js"></script>
+    integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
 </body>
 </html>`
 }
