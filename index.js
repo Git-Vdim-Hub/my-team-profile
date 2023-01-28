@@ -1,9 +1,11 @@
-//PSEUDO CODE
-//1. get the fs to originally write the bare file with the header and the manager
-//2. then getQuerySelector to add all the other cards
-//2. Break down the code per card?
-// create a function to create the page
-// create a function for each of the roles (Manager, Engineer, Intern)
+//To=DO
+// make sure github opens in a new tab
+// Add code comments
+//create demo vid
+//
+//complete readMe
+
+
 
 const inquirer = require('inquirer');
 const fs = require('fs');
@@ -103,7 +105,6 @@ askEngineerQuestions = function(){
         }
     ])
     .then((data) =>{
-        console.log(data);
         let engineer = new Engineer(data.engineerName, data.engineerID, data.engineerEmail, data.engineerGitHub);
         writeEngineerCard(engineer.getName(), engineer.getId(), engineer.getEmail(), engineer.getGitHub());
         askTeamChoice();
@@ -115,7 +116,7 @@ askInternQuestions = function(){
     .prompt([
         {
             type: 'input',
-            name: `InternName`,
+            name: `internName`,
             message: questions[7]
         },
         {
@@ -137,6 +138,8 @@ askInternQuestions = function(){
     ])
     .then((data) => {
         console.log(data);
+        const intern = new Intern(data.internName, data.internID, data.internEmail, data.internSchool);
+        writeInternCard(intern.getName(), intern.getId(), intern.getEmail(), intern.getSchool());
         askTeamChoice();
     })
 }
@@ -204,7 +207,7 @@ writeEngineerCard = function(name, id, email, gitHub){
                         <a href="mailto:${email}" class="card-link text-decoration-none">${email}</a>
                     </li>
                     <li class="list-group-item">GitHub:
-                        <a href="https://github.com/${gitHub}" class="card-link text-decoration-none">${gitHub}</a>
+                        <a href="https://github.com/${gitHub}" target="_blank" class="card-link text-decoration-none">${gitHub}</a>
                     </li>
                     </ul>
                 </div>
