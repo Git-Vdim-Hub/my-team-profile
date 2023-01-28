@@ -7,7 +7,8 @@
 
 const inquirer = require('inquirer');
 const fs = require('fs');
-let members = 1;
+const Manager = require('./lib/Manager');
+const Engineer = require('./lib/Engineer');
 const questions = ['Please enter manager name: ','Please enter employee ID: ', 'Please enter e-mail address',
     'Please enter the team managers office number: ', 'Please select one of the following: ','Please enter engineer name: ',
     'Please enter GitHub username: ', 'Please enter intern name: ','Please enter school: '];
@@ -36,7 +37,7 @@ askManagerQuestions = function(){
             message: questions[2]
         },
         {
-            type: 'number',
+            type: 'input',
             name: 'managerPhone',
             message: questions[3]
         }
@@ -44,7 +45,8 @@ askManagerQuestions = function(){
     ])
     .then((data) =>{
         console.log(data);
-        fs.writeFile('./dist/team.html', writeBaseHTML(), (err) =>{
+        const manager = new Manager(data.managerName, data.managerID, data.managerEmail, data.managerPhone);
+        fs.writeFile('./dist/team.html', writeManagerBaseHTML(manager.getName(), manager.getId(), manager.getEmail(), manager.getPhone()), (err) =>{
             if (err) throw err;
             console.log('The file has been saved!');
         })
@@ -135,7 +137,7 @@ askInternQuestions = function(){
     })
 }
 
-writeBaseHTML = function(){
+writeManagerBaseHTML = function(name, id, email, phone){
     let htmlCode = `<!DOCTYPE html>
     <html lang="en">
     <head>
@@ -161,20 +163,20 @@ writeBaseHTML = function(){
           </div>
         </div>
         <div class="col-md-8 align-items">
-              <div class="row justify-content-md-center">
+              <div class="row justify-content-md-center" id="cards">
                 <div class="col-md-4 gy-3">
                   <div class="card">
-                      <h5 class="card-header border-bottom-0 text-white" style="background-color: #0d6efd;">Jared</h5>
+                      <h5 class="card-header border-bottom-0 text-white" style="background-color: #0d6efd;">${name}</h5>
                       <h6 class="card-header border-0 text-white" style="background-color: #0d6efd;">
                         <i class="bi bi-cup-hot"></i> Manager</h6>
                       <div class="card-body row justify-content-center">
                           <div class="card" style="width: 18rem;">
                               <ul class="list-group list-group-flush text-left">
-                                <li class="list-group-item">ID: 1</li>
+                                <li class="list-group-item">ID: ${id}</li>
                                 <li class="list-group-item">Email:
-                                  <a href="#" class="card-link text-decoration-none">jared@fakeemail.net</a>
+                                <a href="mailto:${email}" class="card-link text-decoration-none">${email}</a>
                                 </li>
-                                <li class="list-group-item">Office Number: 444-444-3212</li>
+                                <li class="list-group-item">Office Number: ${phone}</li>
                               </ul>
                             </div>
                       </div>
@@ -182,11 +184,17 @@ writeBaseHTML = function(){
                 </div>
               </div>
         </div>
+
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" 
         integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>   
+        <script src="../index.js"></script>
     </body>
     </html>`
     return htmlCode;
 }
+
+// writeEngineerCard = function(name, id, email, gitHub){
+
+// }
 
 init();
