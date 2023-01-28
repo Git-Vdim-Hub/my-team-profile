@@ -2,13 +2,13 @@
 const Engineer = require('../lib/Engineer');
 //testing the Engineer class
 describe("Engineer", () => {
-    //testing getStatus()
-    describe("getStatus method", () => {
+    //testing getRole()
+    describe("getRole method", () => {
         it("should return a status of Engineer", () =>{
         //Arrange and act instantiating a new Engineer object with four parameters
         const engineer = new Engineer('Jack', '1', 'jackjohn@gmail.com', 'jack-john');
         //Assert that the status is equal to Engineer
-        expect(engineer.getStatus()).toEqual('Engineer');
+        expect(engineer.getRole()).toEqual('Engineer');
         })
     })
     //testing getGitHub()
