@@ -1,8 +1,4 @@
 # my-team-profile
-
-
-# genMe-readMe
-
 ## Description
 
 This application generates an html file for a coding team with a manager, engineers and interns! The app runs in your command prompt after installing nodejs and running npm i and then executing node index.js in cli. I built this to be able to organize a team of coders better and help re-inforce foundational coding back-end knowledge using node and npm libraries. One of the biggest lessons learned during this project was the difference between running an application from node and writing a static project using the document object model. It is very important to grasp the idea that when writing on the server/node side of the code, the dom is not easily manipulated.
